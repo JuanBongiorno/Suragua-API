@@ -9,6 +9,14 @@ body {
     color: #333;
 }
 
+.imagen-fondo1{
+    background-image:url(../suragua_api/freepik__upload__37400.png);
+}
+
+.lol{
+    background-color: #0056b3;
+}
+
 .container {
     background-color: #fff;
     padding: 30px;
@@ -17,6 +25,7 @@ body {
     width: 100%;
     max-width: 400px;
     text-align: center;
+    opacity: 79%;
 }
 
 .logo {
