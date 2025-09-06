@@ -1,7 +1,7 @@
 const idDispenserInput = document.getElementById('idDispenser');
 
 // ¡IMPORTANTE! Reemplaza 'TU_APPS_SCRIPT_WEB_APP_URL' con la URL que obtuviste al desplegar Apps Script
-const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbylOSk_NM5XmnT7fBdiw6szRzL9-jnZUFtUc8uinOlXwR9MI0Wry1wNeT1vPl2N6NVdMw/exec';
+const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbws-C59jvExbZ37MF0n6UPSOcmNlI-sud5rZWkB0vbKmSIIibcpljvf8mmrlVHW8Duj/exec';
 
 // Credenciales de acceso
 const VALID_USERNAME = 'SURAGUA';
