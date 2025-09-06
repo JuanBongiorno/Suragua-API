@@ -32,11 +32,17 @@ const mantenimientoForm = document.getElementById('mantenimientoForm');
 const mantenimientoMessage = document.getElementById('mantenimientoMessage');
 const backToOptionsFromMantenimiento = document.getElementById('backToOptionsFromMantenimiento');
 
+// Función para obtener el ID de la URL
 function getDispenserIdFromUrl() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('idDispenser');
 }
 
+// Llama a la función al cargar la página para obtener el ID de la URL
+const dispenserIdFromUrl = getDispenserIdFromUrl();
+if (dispenserIdFromUrl) {
+    localStorage.setItem('tempDispenserId', dispenserIdFromUrl);
+}
 
 // --- Funciones para mostrar pantallas ---
 function showScreen(screenToShow) {
@@ -47,22 +53,9 @@ function showScreen(screenToShow) {
 
 // --- Manejo del Login ---
 loginForm.addEventListener('submit', (e) => {
-    e.preventDefault(); // Evita que el formulario se envíe de la forma tradicional
-
-    const username = usernameInput.value;
-    const password = passwordInput.value;
-
-    if (username === VALID_USERNAME && password === VALID_PASSWORD) {
-        loggedInUser = username; // Guarda el usuario logeado
-        loginMessage.textContent = '';
-        usernameInput.value = '';
-        passwordInput.value = '';
-        showScreen(optionsScreen);
-
-        loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    const username = usernameInput.value.toUpperCase(); // Convertir a mayúsculas para la validación
+    const username = usernameInput.value.toUpperCase();
     const password = passwordInput.value;
 
     if (username === VALID_USERNAME && password === VALID_PASSWORD) {
@@ -71,15 +64,13 @@ loginForm.addEventListener('submit', (e) => {
         loginMessage.classList.remove('error-message');
         loginMessage.classList.add('success-message');
         
-        // **AQUÍ VA EL CÓDIGO DEL PUNTO 4**
+        // Lógica para usar el ID del QR después de iniciar sesión
         const tempDispenserId = localStorage.getItem('tempDispenserId');
         if (tempDispenserId) {
-            // Si hay un ID almacenado, navega a la pantalla de mantenimiento
             idDispenserInput.value = tempDispenserId;
             showScreen(mantenimientoScreen);
-            localStorage.removeItem('tempDispenserId'); // Limpia el ID almacenado
+            localStorage.removeItem('tempDispenserId');
         } else {
-            // Si no hay ID, ve a la pantalla de opciones normal
             showScreen(optionsScreen);
         }
     } else {
@@ -89,31 +80,25 @@ loginForm.addEventListener('submit', (e) => {
     }
 });
 
-    } else {
-        loginMessage.textContent = 'Usuario o contraseña incorrectos.';
-    }
-});
-
 btnLogout.addEventListener('click', () => {
-    loggedInUser = ''; // Limpia el usuario logeado
+    loggedInUser = '';
     showScreen(loginScreen);
 });
 
 // --- Navegación entre opciones ---
 btnBidones.addEventListener('click', () => {
     showScreen(bidonesScreen);
-    bidonesMessage.textContent = ''; // Limpia mensajes anteriores
-    bidonesForm.reset(); // Limpia el formulario
+    bidonesMessage.textContent = '';
+    bidonesForm.reset();
 });
 
 btnMantenimiento.addEventListener('click', () => {
     showScreen(mantenimientoScreen);
-    mantenimientoMessage.textContent = ''; // Limpia mensajes anteriores
-    mantenimientoForm.reset(); // Limpia el formulario
-    // Establecer la fecha actual por defecto en el campo de mantenimiento
+    mantenimientoMessage.textContent = '';
+    mantenimientoForm.reset();
     const today = new Date();
     const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Enero es 0
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     document.getElementById('fechaMantenimiento').value = `${yyyy}-${mm}-${dd}`;
 });
@@ -132,7 +117,7 @@ bidonesForm.addEventListener('submit', async (e) => {
 
     const formData = new FormData();
     formData.append('sheet', 'Entregas');
-    formData.append('usuario', loggedInUser); // Agrega el usuario logeado
+    formData.append('usuario', loggedInUser);
     formData.append('cantidadEntregados', document.getElementById('cantidadEntregados').value);
     formData.append('vaciosRetirados', document.getElementById('vaciosRetirados').value);
     formData.append('lugar', document.getElementById('lugar').value);
@@ -148,7 +133,7 @@ bidonesForm.addEventListener('submit', async (e) => {
         bidonesMessage.textContent = '¡Datos de bidones guardados con éxito!';
         bidonesMessage.classList.remove('error-message');
         bidonesMessage.classList.add('success-message');
-        bidonesForm.reset(); // Limpia el formulario después de guardar
+        bidonesForm.reset();
     } catch (error) {
         console.error('Error al enviar datos de bidones:', error);
         bidonesMessage.textContent = 'Error al guardar datos. Intenta de nuevo.';
@@ -163,7 +148,7 @@ mantenimientoForm.addEventListener('submit', async (e) => {
 
     const formData = new FormData();
     formData.append('sheet', 'Mantenimiento');
-    formData.append('usuario', loggedInUser); // Agrega el usuario logeado
+    formData.append('usuario', loggedInUser);
     formData.append('idDispenser', idDispenserInput.value);
     formData.append('fechaMantenimiento', document.getElementById('fechaMantenimiento').value);
     formData.append('lugarDispenser', document.getElementById('lugarDispenser').value);
@@ -179,8 +164,7 @@ mantenimientoForm.addEventListener('submit', async (e) => {
         mantenimientoMessage.textContent = '¡Datos de mantenimiento guardados con éxito!';
         mantenimientoMessage.classList.remove('error-message');
         mantenimientoMessage.classList.add('success-message');
-        mantenimientoForm.reset(); // Limpia el formulario
-        // Establecer la fecha actual de nuevo después de guardar
+        mantenimientoForm.reset();
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -193,25 +177,6 @@ mantenimientoForm.addEventListener('submit', async (e) => {
         mantenimientoMessage.classList.add('error-message');
     }
 });
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    // ... (Tu código de validación de usuario y contraseña) ...
 
-    if (username === VALID_USERNAME && password === VALID_PASSWORD) {
-        loggedInUser = username;
-        loginMessage.textContent = '';
-
-        const tempDispenserId = localStorage.getItem('tempDispenserId');
-        if (tempDispenserId) {
-            // Si hay un ID almacenado, navega a la pantalla de mantenimiento
-            idDispenserInput.value = tempDispenserId;
-            showScreen(mantenimientoScreen);
-            localStorage.removeItem('tempDispenserId'); // Limpia el ID almacenado
-        } else {
-            // Si no hay ID, ve a la pantalla de opciones normal
-            showScreen(optionsScreen);
-        }
-    }
-});
 // Inicializa mostrando la pantalla de login
 showScreen(loginScreen);
