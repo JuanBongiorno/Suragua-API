@@ -1,3 +1,5 @@
+const idDispenserInput = document.getElementById('idDispenser');
+
 // ¡IMPORTANTE! Reemplaza 'TU_APPS_SCRIPT_WEB_APP_URL' con la URL que obtuviste al desplegar Apps Script
 const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbylOSk_NM5XmnT7fBdiw6szRzL9-jnZUFtUc8uinOlXwR9MI0Wry1wNeT1vPl2N6NVdMw/exec';
 
@@ -30,6 +32,12 @@ const mantenimientoForm = document.getElementById('mantenimientoForm');
 const mantenimientoMessage = document.getElementById('mantenimientoMessage');
 const backToOptionsFromMantenimiento = document.getElementById('backToOptionsFromMantenimiento');
 
+function getDispenserIdFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('idDispenser');
+}
+
+
 // --- Funciones para mostrar pantallas ---
 function showScreen(screenToShow) {
     const screens = document.querySelectorAll('.screen');
@@ -50,6 +58,37 @@ loginForm.addEventListener('submit', (e) => {
         usernameInput.value = '';
         passwordInput.value = '';
         showScreen(optionsScreen);
+
+        loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const username = usernameInput.value.toUpperCase(); // Convertir a mayúsculas para la validación
+    const password = passwordInput.value;
+
+    if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+        loggedInUser = username;
+        loginMessage.textContent = 'Inicio de sesión exitoso.';
+        loginMessage.classList.remove('error-message');
+        loginMessage.classList.add('success-message');
+        
+        // **AQUÍ VA EL CÓDIGO DEL PUNTO 4**
+        const tempDispenserId = localStorage.getItem('tempDispenserId');
+        if (tempDispenserId) {
+            // Si hay un ID almacenado, navega a la pantalla de mantenimiento
+            idDispenserInput.value = tempDispenserId;
+            showScreen(mantenimientoScreen);
+            localStorage.removeItem('tempDispenserId'); // Limpia el ID almacenado
+        } else {
+            // Si no hay ID, ve a la pantalla de opciones normal
+            showScreen(optionsScreen);
+        }
+    } else {
+        loginMessage.textContent = 'Usuario o contraseña incorrectos.';
+        loginMessage.classList.add('error-message');
+        loginMessage.classList.remove('success-message');
+    }
+});
+
     } else {
         loginMessage.textContent = 'Usuario o contraseña incorrectos.';
     }
@@ -125,6 +164,7 @@ mantenimientoForm.addEventListener('submit', async (e) => {
     const formData = new FormData();
     formData.append('sheet', 'Mantenimiento');
     formData.append('usuario', loggedInUser); // Agrega el usuario logeado
+    formData.append('idDispenser', idDispenserInput.value);
     formData.append('fechaMantenimiento', document.getElementById('fechaMantenimiento').value);
     formData.append('lugarDispenser', document.getElementById('lugarDispenser').value);
     formData.append('sectorDispenser', document.getElementById('sectorDispenser').value);
@@ -153,6 +193,25 @@ mantenimientoForm.addEventListener('submit', async (e) => {
         mantenimientoMessage.classList.add('error-message');
     }
 });
+loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    // ... (Tu código de validación de usuario y contraseña) ...
 
+    if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+        loggedInUser = username;
+        loginMessage.textContent = '';
+
+        const tempDispenserId = localStorage.getItem('tempDispenserId');
+        if (tempDispenserId) {
+            // Si hay un ID almacenado, navega a la pantalla de mantenimiento
+            idDispenserInput.value = tempDispenserId;
+            showScreen(mantenimientoScreen);
+            localStorage.removeItem('tempDispenserId'); // Limpia el ID almacenado
+        } else {
+            // Si no hay ID, ve a la pantalla de opciones normal
+            showScreen(optionsScreen);
+        }
+    }
+});
 // Inicializa mostrando la pantalla de login
 showScreen(loginScreen);
