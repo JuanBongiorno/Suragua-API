@@ -4,7 +4,7 @@ const idDispenserInput = document.getElementById('idDispenser');
 const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzbjhRNjUE9mPQA0mZubSp374dS0WJlWTTdQ5Oqqc-Rok5rocJrdq9wZ8qnQTczZo8f/exec';
 
 // Credenciales de acceso
-const VALID_USERNAME = 'SURAGUA';
+const VALID_USERNAME = 'TOYOTA';
 const VALID_PASSWORD = 'Broncel3876';
 
 let loggedInUser = ''; // Variable para almacenar el usuario logeado
